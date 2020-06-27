@@ -73,8 +73,8 @@ func send() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("send")
-		_, err = conn.Write([]byte("1:" + strconv.FormatInt(time.Now().Unix(), 10) + ":baish:DESKTOP-9JBFHEM:6291457:bs2"))
+		fmt.Println("发送检测广播")
+		_, err = conn.Write([]byte("1:" + strconv.FormatInt(time.Now().Add(8*time.Hour).Unix(), 10) + ":baish:DESKTOP-9JBFHEM:6291457:bs2"))
 		if err != nil {
 			panic(err)
 		}
@@ -86,15 +86,14 @@ func send() {
 		if err != nil {
 			panic(err)
 		}
-		if addr.Port == 2424 {
-			continue
-		}
 		handleCast(buf, addr)
 	}
 }
 
 func handleCast(buf []byte, addr *net.UDPAddr) {
-
+	if addr.Port == 2424 {
+		return
+	}
 	str := replacer.Replace(string(buf))
 	if ok, _ := regexp.MatchString("^1 [0-9]+ [a-zA-Z0-9]+ [a-z-A-Z0-9]+ [0-9]+ [\u4e00-\u9fa50-9a-zA-Z]+[\u0000]*$", str); !ok {
 		return
